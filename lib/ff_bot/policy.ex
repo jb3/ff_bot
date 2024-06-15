@@ -37,12 +37,8 @@ defmodule FFBot.Policy do
   end
 
   defp parse_file(contents) do
-    # Decode the content from base64 and traim trailing spaces/newlines.
-    decoded_content =
-      contents
-      |> String.trim_trailing()
-      |> Base.decode64!()
-      |> String.trim_trailing()
+    # Decode the content from base64 (maybe with newlines)
+    decoded_content = Base.decode64!(contents, ignore: :whitespace)
 
     # Read and decode the YAML from the file
     case YamlElixir.read_all_from_string(decoded_content) do
