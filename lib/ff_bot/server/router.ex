@@ -53,7 +53,9 @@ defmodule FFBot.Server.Router do
     uptime: #{upt}
     """
 
-    send_resp(conn, 200, body)
+    conn
+    |> put_resp_header("content-type", "text/plain")
+    |> send_resp(200, body)
   end
 
   # Entrypoint for content coming from GitHub.
