@@ -8,6 +8,8 @@ defmodule FFBot.HMAC do
   """
   import Plug.Conn
 
+  require Logger
+
   @doc false
   @spec init(list()) :: list()
   def init(opts) do
@@ -37,6 +39,7 @@ defmodule FFBot.HMAC do
 
       # Signature provided in header was not base 16
       :error ->
+        Logger.info("Invalid signature provided")
         {nil, false}
     end
   end

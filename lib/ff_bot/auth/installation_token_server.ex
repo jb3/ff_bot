@@ -15,6 +15,8 @@ defmodule FFBot.Auth.InstallationTokenServer do
 
   alias FFBot.{Auth.BearerTokenServer, GitHub}
 
+  require Logger
+
   def start_link(arg) do
     GenServer.start_link(__MODULE__, arg, name: __MODULE__)
   end
@@ -32,6 +34,7 @@ defmodule FFBot.Auth.InstallationTokenServer do
   end
 
   defp generate_token(install_id) do
+    Logger.info("Generating new token", installation_id: install_id)
     # Create a new token by POSTing to the endpoint using the generated bearer token JWT
     {201, token} =
       GitHub.Request.request(
@@ -45,6 +48,8 @@ defmodule FFBot.Auth.InstallationTokenServer do
 
     # Add the newly generated token to the ETS table
     :ets.insert(:installation_tokens, {install_id, {expires, token["token"]}})
+
+    Logger.debug("New token generated, expires at #{expires}", installation_id: install_id)
 
     # Return the token
     token["token"]
@@ -65,6 +70,10 @@ defmodule FFBot.Auth.InstallationTokenServer do
       [{install_id, {exp, token}}] ->
         # If it expired in the past, create and return a new token
         if exp <= DateTime.utc_now() do
+          Logger.info("Token was expired at lookup time, generating new one",
+            installation_id: install_id
+          )
+
           token = generate_token(install_id)
 
           {:reply, token, state}

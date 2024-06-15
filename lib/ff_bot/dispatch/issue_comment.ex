@@ -11,9 +11,6 @@ defmodule FFBot.Dispatch.IssueComment do
 
   @impl true
   def dispatch(:created, body) do
-    repo = body["repository"]
-    reference = "#{repo["owner"]["login"]}/#{repo["name"]}##{body["issue"]["number"]}"
-
     # If the pull request attribute of the issue is undefined, it's just a regular issue
     if body["issue"]["pull_request"] != nil do
       # If it is defined, the comment is on a PR
@@ -23,11 +20,12 @@ defmodule FFBot.Dispatch.IssueComment do
         _ -> nil
       end
     else
-      Logger.info("Ignoring comment event from non-PR #{reference}")
+      Logger.info("Ignoring comment event from non-PR")
     end
   end
 
   defp command_dispatch(command, body) do
+    Logger.info("Received command: #{command}")
     # Generate a new token for this specific installation
     token = InstallationTokenServer.get_token(body["installation"]["id"])
 
@@ -75,6 +73,8 @@ defmodule FFBot.Dispatch.IssueComment do
     repo = body["repository"]["name"]
     pr_num = body["issue"]["number"]
 
+    Logger.debug("Fetching repo details")
+
     # Fetch the repo details, which we will use to determine the default branch
     # which is used later in the comparison process
     {200, repo_details} =
@@ -84,6 +84,8 @@ defmodule FFBot.Dispatch.IssueComment do
         auth: {:token, token}
       )
 
+    Logger.debug("Fetching PR details")
+
     # Fetch details on the PR from GitHub, which we will later use to help determine
     # if the branches are in a state where a fast-forward merge can be performed
     {200, pr_details} =
@@ -92,6 +94,8 @@ defmodule FFBot.Dispatch.IssueComment do
         GitHub.Endpoint.pull_req_info(owner, repo, pr_num),
         auth: {:token, token}
       )
+
+    Logger.debug("Comparing tips of branches")
 
     # Using the information collected in the prior requests, call the GitHub API
     # to determine the commit diff between two branches. This will tell us whether
@@ -111,6 +115,8 @@ defmodule FFBot.Dispatch.IssueComment do
     # If the status is anything but "ahead" (branch only has new commits and is up to date with default),
     # then we return an error onto the PR
     if comparison_details["status"] != "ahead" do
+      Logger.info("Aborting merge attempt, branch was #{comparison_details["status"]}")
+
       GitHub.Request.comment(
         token,
         owner,
@@ -124,8 +130,11 @@ defmodule FFBot.Dispatch.IssueComment do
           "or merge locally."
       )
     else
+      Logger.info("Triggering merger...")
       # If the PR status was "ahead", we can start the merge process.
-      GitHub.Merger.start_merge(token, repo_details, pr_details)
+      spawn(fn ->
+        GitHub.Merger.start_merge(token, repo_details, pr_details)
+      end)
     end
   end
 end

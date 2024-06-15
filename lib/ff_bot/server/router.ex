@@ -7,6 +7,9 @@ defmodule FFBot.Server.Router do
   # Assign each request a unique ID for tracing
   plug(Plug.RequestId, assign_as: :plug_request_id)
 
+  # Find remote IP for each connection
+  plug(RemoteIp)
+
   # Log each request and timings to the console
   plug(Plug.Logger)
 

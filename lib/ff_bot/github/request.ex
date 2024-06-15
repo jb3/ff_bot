@@ -4,6 +4,8 @@ defmodule FFBot.GitHub.Request do
   """
   alias FFBot.GitHub.Endpoint
 
+  require Logger
+
   # Helper function to build a specified auth header into the valid
   # format to send to the API
   defp build_auth({:jwt, jwt}) do
@@ -25,6 +27,8 @@ defmodule FFBot.GitHub.Request do
         nil -> nil
         other -> List.to_string(:json.encode(other))
       end
+
+    Logger.debug("Making #{method} request to #{endpoint}")
 
     # Build and send the request with the provided parameters,
     # filling in auth if needed

@@ -10,6 +10,8 @@ defmodule FFBot.Auth.BearerTokenServer do
 
   alias FFBot.Auth.BearerToken
 
+  require Logger
+
   def start_link(arg) do
     GenServer.start_link(__MODULE__, arg, name: __MODULE__)
   end
@@ -34,6 +36,7 @@ defmodule FFBot.Auth.BearerTokenServer do
 
     # Test for token expiry
     if state.exp - 10 <= time_now do
+      Logger.info("Issuing new bearer token JWT")
       # Create an issuing time in seconds
       issue_time = Integer.floor_div(System.os_time(), 1_000_000_000)
 

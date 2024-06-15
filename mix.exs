@@ -27,6 +27,7 @@ defmodule FFBot.MixProject do
       {:yaml_elixir, "~> 2.9"},
       {:temp, "~> 0.4"},
       {:git_cli, "~> 0.3"},
+      {:remote_ip, "~> 1.2"},
       {:credo, "~> 1.7", only: [:dev]}
     ]
   end
