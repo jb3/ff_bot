@@ -63,6 +63,7 @@ defmodule FFBot.GitHub.Request do
         :info -> ":information_source:"
         :warning -> ":warning:"
         :error -> ":x:"
+        :success -> ":white_check_mark:"
       end
 
     request(

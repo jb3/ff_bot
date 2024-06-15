@@ -11,6 +11,8 @@ defmodule FFBot.GitHub.Merger do
 
   require Logger
 
+  alias FFBot.GitHub.Request
+
   def start_merge(token, repo, pull_request) do
     Logger.metadata(
       repo: "#{repo["owner"]["login"]}/#{repo["name"]}",
@@ -32,6 +34,18 @@ defmodule FFBot.GitHub.Merger do
     Logger.info("Running clearup")
 
     File.rm_rf(directory)
+
+    Logger.info("Send confirmation onto pull request")
+
+    Request.comment(
+      token,
+      repo["owner"]["login"],
+      repo["name"],
+      pull_request["number"],
+      :success,
+      "Successfully fast-forwarded commits from `#{pull_request["head"]["label"]}` " <>
+        "onto `#{repo["default_branch"]}`"
+    )
   end
 
   defp clone_repo(token, repo) do
@@ -46,10 +60,10 @@ defmodule FFBot.GitHub.Merger do
   end
 
   defp merge_pull_req(cloned_repo, pull_request) do
-    Git.merge(cloned_repo, ["--ff-only", "origin/#{pull_request["head"]["ref"]}"])
+    {:ok, _} = Git.merge(cloned_repo, ["--ff-only", "origin/#{pull_request["head"]["ref"]}"])
   end
 
   defp push_changes(cloned) do
-    Git.push(cloned)
+    {:ok, _} = Git.push(cloned)
   end
 end
