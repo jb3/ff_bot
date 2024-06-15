@@ -12,7 +12,7 @@ and avoiding the rewriting of commits.
 
 ### Creating the application
 
-Follow the guide [here](github-guide) to create a new GitHub app.
+Follow the guide [here](https://docs.github.com/en/apps/creating-github-apps/registering-a-github-app/registering-a-github-app) to create a new GitHub app.
 
 The following permissions are required:
 - Contents: Read & Write
@@ -27,11 +27,9 @@ client secret.
 
 Once created, generate a client secret and keep a hold of this value for later.
 
-[github-guide]: https://docs.github.com/en/apps/creating-github-apps/registering-a-github-app/registering-a-github-app
-
 ### Deployment
 
-A Docker image is published at [`ghcr.io/jb3/ff_bot:latest`](img) which can be used to
+A Docker image is published at [`ghcr.io/jb3/ff_bot:latest`](https://ghcr.io/jb3/ff_bot) which can be used to
 deploy this application.
 
 The following environment variables must be set:
@@ -48,8 +46,6 @@ You can also optionally set these variables:
 |------------------|-------------------------------------------------------|----------------------|
 | `FF_POLICY_FILE` | The file to read for policy on who can perform merges | `.github/ff-bot.yml` |
 | `FF_LISTEN_PORT` | The HTTP port for the service to listen on            | 4000                 |
-
-[img]: https://ghcr.io/jb3/ff_bot
 
 ## Usage
 
