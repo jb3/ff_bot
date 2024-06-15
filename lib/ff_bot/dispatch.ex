@@ -9,6 +9,21 @@ defmodule FFBot.Dispatch do
   alias FFBot.Dispatch
 
   def dispatch(event, action, body) do
+    Logger.metadata(installation_id: body["installation"]["id"])
+
+    if body["repository"] do
+      repo = body["repository"]
+      Logger.metadata(repo: "#{repo["owner"]["login"]}/#{repo["name"]}")
+    end
+
+    if body["issue"] do
+      Logger.metadata(issue: "#{body["issue"]["number"]}")
+    end
+
+    if body["sender"] do
+      Logger.metadata(sender: "#{body["sender"]["login"]}")
+    end
+
     # Search for a module for the given event type
     module =
       case event do
