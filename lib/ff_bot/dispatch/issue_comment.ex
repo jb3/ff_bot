@@ -24,6 +24,11 @@ defmodule FFBot.Dispatch.IssueComment do
     end
   end
 
+  @impl true
+  def dispatch(_other, _body) do
+    # no-op
+  end
+
   defp command_dispatch(command, body) do
     Logger.info("Received command: #{command}")
     # Generate a new token for this specific installation
