@@ -20,13 +20,13 @@ RUN mix local.hex --force && \
     mix local.rebar --force
 
 # set build ENV
-ENV MIX_ENV="prod"
-ENV ERL_FLAGS="+JPperf true"
+ENV MIX_ENV="prod" \
+    ERL_FLAGS="+JPperf true"
 
 # install mix dependencies
 COPY mix.exs mix.lock ./
-RUN mix deps.get --only $MIX_ENV
-RUN mkdir config
+RUN mix deps.get --only $MIX_ENV && \
+    mkdir config
 
 # copy compile-time config files before we compile dependencies
 # to ensure any relevant config change will trigger the dependencies
@@ -50,15 +50,13 @@ FROM ${RUNNER_IMAGE}
 
 RUN apk add --no-cache ca-certificates git libstdc++ openssl ncurses
 
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US:en
-ENV LC_ALL en_US.UTF-8
+ENV LANG=en_US.UTF-8 \
+    LANGUAGE=en_US:en \
+    LC_ALL=en_US.UTF-8 \
+    MIX_ENV=prod
 
 WORKDIR "/app"
 RUN chown nobody /app
-
-# set runner ENV
-ENV MIX_ENV="prod"
 
 # Only copy the final release from the build stage
 COPY --from=builder --chown=nobody:root /app/_build/${MIX_ENV}/rel/ ./
