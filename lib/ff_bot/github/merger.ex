@@ -68,7 +68,7 @@ defmodule FFBot.GitHub.Merger do
   end
 
   defp maybe_propaganda do
-    if :rand.uniform() < 0.01 do
+    if Application.get_env(:ff_bot, :disable_propaganda?) != nil and :rand.uniform() < 0.01 do
       ". Glory to Arstotzka!"
     else
       ""

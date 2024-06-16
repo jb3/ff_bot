@@ -5,4 +5,5 @@ config :ff_bot,
   github_client_id: System.fetch_env!("GITHUB_CLIENT_ID"),
   github_client_secret: System.fetch_env!("GITHUB_CLIENT_SECRET") |> String.replace("\\n", "\n"),
   policy_file: System.get_env("FF_POLICY_FILE", ".github/ff-bot.yml"),
-  service_port: System.get_env("FF_LISTEN_PORT", "4000") |> String.to_integer()
+  service_port: System.get_env("FF_LISTEN_PORT", "4000") |> String.to_integer(),
+  disable_propaganda?: System.get_env("FF_NO_PROPAGANDA")
