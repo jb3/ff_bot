@@ -11,6 +11,7 @@ defmodule FFBot.GitHub.Merger do
 
   require Logger
 
+  alias FFBot.Politics
   alias FFBot.GitHub.Request
 
   def start_merge(token, repo, pull_request) do
@@ -44,7 +45,7 @@ defmodule FFBot.GitHub.Merger do
       pull_request["number"],
       :success,
       "Successfully fast-forwarded commits from `#{pull_request["head"]["label"]}` " <>
-        "onto `#{repo["default_branch"]}`" <> maybe_propaganda()
+        "onto `#{repo["default_branch"]}`" <> Politics.maybe_supportive_comment()
     )
   end
 
@@ -65,13 +66,5 @@ defmodule FFBot.GitHub.Merger do
 
   defp push_changes(cloned) do
     {:ok, _} = Git.push(cloned)
-  end
-
-  defp maybe_propaganda do
-    if Application.get_env(:ff_bot, :disable_propaganda?) == nil and :rand.uniform() < 0.01 do
-      ". Glory to Arstotzka!"
-    else
-      ""
-    end
   end
 end

@@ -1,0 +1,42 @@
+defmodule FFBot.Politics do
+  @moduledoc """
+  Encouragement functions for our Comrades.
+  """
+
+  @german_reunification_margin 0.01
+  @cuban_missile_crisis_threshold 0.01
+
+  defp supports_comrades? do
+    Application.get_env(:ff_bot, :reagan_supporter?) == nil
+  end
+
+  defp should_generate_supportive_comment? do
+    :rand.uniform() < @german_reunification_margin
+  end
+
+  defp should_generate_encouraging_comment? do
+    :rand.uniform() < @cuban_missile_crisis_threshold
+  end
+
+  @doc """
+  On a slim chance, generate a comment that expresses appreciation in the comrade's work.
+  """
+  def maybe_supportive_comment do
+    if supports_comrades?() && should_generate_supportive_comment?() do
+      ". Glory to Arstotzka!"
+    else
+      ""
+    end
+  end
+
+  @doc """
+  On a slim chance, generate a comment that expresses encouragement for the comrade to work better.
+  """
+  def maybe_encouraging_comment do
+    if supports_comrades?() && should_generate_encouraging_comment?() do
+      ". Any negligence will result in swift punishment."
+    else
+      ""
+    end
+  end
+end
