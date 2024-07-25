@@ -3,19 +3,23 @@ defmodule FFBot.Encouragement do
   Encouragement functions for our Comrades.
   """
 
-  @german_reunification_margin 0.01
-  @cuban_missile_crisis_threshold 0.01
+  # Fractional percentage of how often the bot will generate a supportive
+  # comment on merge.
+  @support_a_comrade_margin 0.01
+  # Fractional percentage of how often the bot will generate an encouraging
+  # comment on conflicts.
+  @encourage_a_comrade_threshold 0.01
 
   defp supports_comrades? do
     Application.get_env(:ff_bot, :disable_propaganda?) == nil
   end
 
   defp should_generate_supportive_comment? do
-    :rand.uniform() < @german_reunification_margin
+    :rand.uniform() < @support_a_comrade_margin
   end
 
   defp should_generate_encouraging_comment? do
-    :rand.uniform() < @cuban_missile_crisis_threshold
+    :rand.uniform() < @encourage_a_comrade_threshold
   end
 
   @doc """
