@@ -11,7 +11,7 @@ defmodule FFBot.GitHub.Merger do
 
   require Logger
 
-  alias FFBot.Politics
+  alias FFBot.Encouragement
   alias FFBot.GitHub.Request
 
   def start_merge(token, repo, pull_request) do
@@ -45,7 +45,7 @@ defmodule FFBot.GitHub.Merger do
       pull_request["number"],
       :success,
       "Successfully fast-forwarded commits from `#{pull_request["head"]["label"]}` " <>
-        "onto `#{repo["default_branch"]}`" <> Politics.maybe_supportive_comment()
+        "onto `#{repo["default_branch"]}`" <> Encouragement.maybe_supportive_comment()
     )
   end
 

@@ -1,4 +1,4 @@
-defmodule FFBot.Politics do
+defmodule FFBot.Encouragement do
   @moduledoc """
   Encouragement functions for our Comrades.
   """
