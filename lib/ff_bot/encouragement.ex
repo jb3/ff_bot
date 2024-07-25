@@ -7,7 +7,7 @@ defmodule FFBot.Encouragement do
   @cuban_missile_crisis_threshold 0.01
 
   defp supports_comrades? do
-    Application.get_env(:ff_bot, :reagan_supporter?) == nil
+    Application.get_env(:ff_bot, :disable_propaganda?) == nil
   end
 
   defp should_generate_supportive_comment? do
