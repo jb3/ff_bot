@@ -38,7 +38,7 @@ defmodule FFBot.Encouragement do
   """
   def maybe_encouraging_comment do
     if supports_comrades?() && should_generate_encouraging_comment?() do
-      ". Any negligence will result in swift punishment."
+      ". March on, Comrade!"
     else
       ""
     end
