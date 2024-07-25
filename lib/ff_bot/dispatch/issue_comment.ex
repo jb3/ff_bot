@@ -5,7 +5,7 @@ defmodule FFBot.Dispatch.IssueComment do
   """
   @behaviour FFBot.Dispatch
 
-  alias FFBot.{Auth.InstallationTokenServer, GitHub, Policy}
+  alias FFBot.{Auth.InstallationTokenServer, GitHub, Policy, Encouragement}
 
   require Logger
 
@@ -132,7 +132,7 @@ defmodule FFBot.Dispatch.IssueComment do
           "#{comparison_details["ahead_by"]} commits and behind by " <>
           "#{comparison_details["behind_by"]} commits. Please update the branch " <>
           "to reflect changes on `#{repo_details["default_branch"]}` and try again, " <>
-          "or merge locally."
+          "or merge locally." <> Encouragement.maybe_encouraging_comment()
       )
     else
       Logger.info("Triggering merger...")
