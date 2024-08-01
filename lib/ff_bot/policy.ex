@@ -22,7 +22,7 @@ defmodule FFBot.Policy do
   """
   def get_policy_file(token, owner, repo) do
     # Get the file
-    file =
+    response =
       GitHub.Request.request(
         :get,
         GitHub.Endpoint.policy_file(owner, repo),
@@ -30,9 +30,13 @@ defmodule FFBot.Policy do
       )
 
     # If we found the file, parse it, else return a missing file error.
-    case file do
-      {200, file} -> parse_file(file["content"])
-      _ -> {:error, :missing_config}
+    case response do
+      {200, json} ->
+        parse_file(json["content"])
+
+      {status, json} ->
+        Logger.error("Retrieved code #{status} with response #{inspect(json)} for policy file at #{owner}/#{repo}")
+        {:error, :missing_config}
     end
   end
 
