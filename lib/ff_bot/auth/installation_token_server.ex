@@ -68,10 +68,12 @@ defmodule FFBot.Auth.InstallationTokenServer do
 
       # If we did find a token, we look at the expiry date on it
       [{install_id, {exp, token}}] ->
-        # If it expired in the past, create and return a new token
-        if exp <= DateTime.utc_now() do
-          Logger.info("Token was expired at lookup time, generating new one",
-            installation_id: install_id
+        # If it expires soon (or is already expired), create and return a new token
+        exp_with_margin = DateTime.add(exp, -10, :second)
+        if exp_with_mergin <= DateTime.utc_now() do
+          Logger.info("Token expires at or near lookup time, generating new one",
+            installation_id: install_id,
+            expiry: exp
           )
 
           token = generate_token(install_id)
