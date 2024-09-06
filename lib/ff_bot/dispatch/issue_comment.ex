@@ -16,7 +16,7 @@ defmodule FFBot.Dispatch.IssueComment do
       # If it is defined, the comment is on a PR
       case body["comment"]["body"] do
         # If it starts with "/" and matches one of our commands, pass to the command runner
-        "/" <> command when command in ["merge"] -> command_dispatch(command, body)
+        "/merge " <> _high_praise -> command_dispatch("merge", body)
         _ -> nil
       end
     else
